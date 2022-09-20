@@ -45,10 +45,9 @@ void oncloseCB(ws_cli_conn_t *client)
 void onmessageCB(ws_cli_conn_t *client,
     const unsigned char *msg, uint64_t size, int type)
 {
-  int i=0;
-  for(i=0;i<=wsid;i++)
-    if(wscon[i]!=client)
-      ws_sendframe(wscon[i], msg, size, type);
+  char *cli;
+  cli = ws_getaddress(client);
+  printf("RECV:%s[%s]\n", msg, cli);
 }
 
 int main(int argc, char *argv[]) {
