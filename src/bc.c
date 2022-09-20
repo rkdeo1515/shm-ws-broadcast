@@ -13,16 +13,14 @@ int semid;
 int shmid;
 void *shmpt;
 
-int quit = 0;
-
 int wsid=0;
 ws_cli_conn_t *wscon[10];
 
 void siginthandler(int signo) {
   fprintf(stdout, "QUIT SIGNAL..\n");
-  quit = 1;
   deletesem(&semid);
   deleteshm(&shmid, shmpt);
+  exit(0);
 }
 
 void onopenCB(ws_cli_conn_t *client)
@@ -75,7 +73,7 @@ int main(int argc, char *argv[]) {
 
   signal(SIGINT, siginthandler);
 
-  while (!quit) {
+  while (1) {
     readshm(semid,shmpt, buffer, BUFSIZE);
   
     if(buffer[0]){
@@ -89,6 +87,5 @@ int main(int argc, char *argv[]) {
     }
       
   }
-
   return 0;
 }
