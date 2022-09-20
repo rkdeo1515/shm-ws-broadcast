@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC</title>
+</head>
+
+<body>
+    <h1>WS TEST</h1>
+    <p>
+        <label for="text0">SERVER:</label><br>
+        <input type="text" id="text0" maxlength="25" size="25" value="172.17.250.244:3030">
+        <button id="btn0">WS-START</button>
+        <button id="btn1">WS-CLOSE</button>
+    </p>
+    <p>
+        <label for="text1">SEND:</label><br>
+        <input type="text" id="text1" maxlength="50" size="50">
+        <button id="btn2">SEND</button>
+    </p>
+    <p>
+        <label for="text2">RECV:</label><br>
+        <input type="text" id="text2" maxlength="50" size="50">
+    </p>
+    <script>
+
+        const wsServerAddr = document.getElementById("text0")
+        const wsSendText = document.getElementById("text1")
+        const wsRecvText = document.getElementById("text2")
+        const wsStartButton = document.getElementById("btn0")
+        const wsCloseButton = document.getElementById("btn1")
+        const wsSendButton = document.getElementById("btn2")
+        
+        wsServerAddr.disabled = false;
+        wsSendText.disabled = true;
+        wsRecvText.disabled = true;
+        wsStartButton.disabled = false;
+        wsCloseButton.disabled = true;
+        wsSendButton.disabled = true;
+        
+        wsStartButton.addEventListener('click', wsStart)
+        wsCloseButton.addEventListener('click', wsClose)
+        wsSendButton.addEventListener('click', wsSend)
+
+        let webSocket;
+
+        async function wsStart() {
+            webSocket = new WebSocket("ws://" + wsServerAddr.value);
+            webSocket.addEventListener('open', () => {
+                console.log("Opne ws");
+                wsServerAddr.disabled = true;
+                wsSendText.disabled = false;
+                wsRecvText.disabled = false;
+                wsStartButton.disabled = true;
+                wsCloseButton.disabled = false;
+                wsSendButton.disabled = false;
+            })
+            webSocket.addEventListener('message', e=>wsRecvText.value=e.data);
+        }
+
+        async function wsSend() {
+            console.log("SEND")
+            await webSocket.send(wsSendText.value);
+        }
+
+        async function wsClose() {
+            console.log("Close ws")
+            webSocket.close();
+            wsServerAddr.disabled = false;
+            wsSendText.disabled = true;
+            wsRecvText.disabled = true;
+            wsStartButton.disabled = false;
+            wsCloseButton.disabled = true;
+            wsSendButton.disabled = true;
+        }
+
+    </script>
+</body>
