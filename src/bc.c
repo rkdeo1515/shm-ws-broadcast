@@ -21,6 +21,8 @@ ws_cli_conn_t *wscon[10];
 void siginthandler(int signo) {
   fprintf(stdout, "QUIT SIGNAL..\n");
   quit = 1;
+  deletesem(&semid);
+  deleteshm(&shmid, shmpt);
 }
 
 void onopenCB(ws_cli_conn_t *client)
@@ -87,7 +89,6 @@ int main(int argc, char *argv[]) {
     }
       
   }
-  deletesem(&semid);
-  deleteshm(&shmid, shmpt);
+
   return 0;
 }
